@@ -1,19 +1,24 @@
-Java
-target/
-*.class
-
-Python
 venv/
 pycache/
 *.pyc
 
-IDE
-.vscode/
-.idea/
+Java build files
+target/
+*.class
 
-OS
+Maven
+.mvn/wrapper/maven-wrapper.jar
+
+Logs
+.log
+
+OS files
 .DS_Store
 Thumbs.db
 
-Environment
-.env
+Keep Java source files
+!backend-java/
+!backend-java//
+!backend-java//.java
+!backend-java//*.xml
+!backend-java//*.properties
