@@ -67,3 +67,37 @@ The Python analytics module supports:
 •	Calculating average monthly stock usage 
 •	Forecasting next month stock usage 
 •	Creating an inventory trend graph 
+
+
+## Week 3 Progress
+
+During Week 3, REST APIs, authentication modules, frontend starter pages, and API testing support were added.
+
+## Completed Features
+
+- Added REST API controllers
+- Added authentication system
+- Added user registration/login
+- Added dashboard starter
+- Added Postman API testing
+- Added advanced reporting structure
+- Added low stock API access
+
+## New API Endpoints
+
+- GET /products/all
+- GET /products/low-stock
+- GET /suppliers/all
+- GET /transactions/all
+- POST /auth/login
+
+## Frontend Update
+
+- Added basic dashboard.html starter page
+
+## Analytics Update
+
+Enhanced Python forecasting with:
+- Category-based forecasting
+- Regional demand forecasting
+- Reorder suggestions

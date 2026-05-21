@@ -56,3 +56,10 @@ CREATE TABLE purchase_orders (
     FOREIGN KEY (request_id) REFERENCES purchase_requests(request_id),
     FOREIGN KEY (vendor_id) REFERENCES vendors(vendor_id)
 );
+
+CREATE TABLE IF NOT EXISTS users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    role TEXT DEFAULT 'staff'
+);

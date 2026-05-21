@@ -1,54 +1,67 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("analytics-python/retail_store_inventory.csv")
+# Monthly stock usage data
+df = pd.read_csv("analytics-python/sample_data.csv")
 
-df["Date"] = pd.to_datetime(df["Date"])
+# Basic forecasting
+average_usage = df["Stock_Used"].mean()
+last_month_usage = df["Stock_Used"].iloc[-1]
+next_month_forecast = (average_usage + last_month_usage) / 2
 
-monthly_data = df.groupby(df["Date"].dt.to_period("M")).agg({
-    "Units Sold": "sum",
-    "Inventory Level": "mean",
-    "Demand Forecast": "mean",
-    "Units Ordered": "sum"
-}).reset_index()
+# Category-based forecasting
+categories = {
+    "Electronics": 220,
+    "Groceries": 180,
+    "Furniture": 140
+}
 
-monthly_data["Date"] = monthly_data["Date"].astype(str)
+# Regional demand forecasting
+regions = {
+    "North": 200,
+    "South": 170,
+    "East": 150,
+    "West": 190
+}
 
-average_units_sold = monthly_data["Units Sold"].mean()
-last_month_units_sold = monthly_data["Units Sold"].iloc[-1]
-next_month_forecast = (average_units_sold + last_month_units_sold) / 2
+# Reorder suggestions
+reorder_level = 160
 
 print("Inventory Forecast Report")
 print("-------------------------")
-print(monthly_data)
+print(df)
 print()
-print(f"Average Monthly Units Sold: {average_units_sold:.2f}")
-print(f"Last Month Units Sold: {last_month_units_sold:.2f}")
-print(f"Next Month Forecasted Units Sold: {next_month_forecast:.2f}")
 
-plt.figure(figsize=(10, 6))
-plt.plot(monthly_data["Date"], monthly_data["Units Sold"], marker="o")
-plt.title("Monthly Units Sold Trend")
+print(f"Average Monthly Stock Usage: {average_usage:.2f}")
+print(f"Last Month Stock Usage: {last_month_usage}")
+print(f"Next Month Forecasted Stock Usage: {next_month_forecast:.2f}")
+
+print("\nCategory-Based Forecasting")
+for category, demand in categories.items():
+    print(f"{category}: Expected Demand = {demand}")
+
+print("\nRegional Demand Forecasting")
+for region, demand in regions.items():
+    print(f"{region}: Forecast Demand = {demand}")
+
+print("\nReorder Suggestions")
+for category, demand in categories.items():
+    if demand > reorder_level:
+        print(f"Reorder needed for {category}")
+
+# Graph
+plt.figure(figsize=(8, 5))
+plt.plot(df["Month"], df["Stock_Used"], marker="o")
+
+plt.title("Monthly Inventory Usage Trend")
 plt.xlabel("Month")
-plt.ylabel("Units Sold")
+plt.ylabel("Stock Used")
+
 plt.xticks(rotation=45)
 plt.grid(True)
+
 plt.tight_layout()
+
 plt.savefig("inventory_trend.png")
+
 plt.show()
-
-low_inventory = df[df["Inventory Level"] <= df["Demand Forecast"]]
-
-print()
-print("Low Inventory Alert Records:")
-print("----------------------------")
-print(low_inventory[[
-    "Date",
-    "Store ID",
-    "Product ID",
-    "Category",
-    "Region",
-    "Inventory Level",
-    "Demand Forecast",
-    "Units Ordered"
-]].head(20))
