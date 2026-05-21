@@ -2,48 +2,114 @@
   "info": {
     "_postman_id": "beedb221-f53b-4055-9090-6b71abf3e961",
     "name": "Inventory API Collection",
+    "description": "Inventory Management System REST API endpoints (Spring Boot backend on port 8080).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "55048432",
     "_collection_link": "https://go.postman.co/collection/55048432-beedb221-f53b-4055-9090-6b71abf3e961?source=collection_link"
   },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    }
+  ],
   "item": [
     {
-      "name": "New Request",
+      "name": "Health Check",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "health"]
+        },
+        "description": "Verify the backend is running."
       },
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "Get All Products",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/all",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "all"]
+        },
+        "description": "List all products (output printed to server console)."
       },
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "Get Low Stock Products",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/products/low-stock",
+          "host": ["{{baseUrl}}"],
+          "path": ["products", "low-stock"]
+        },
+        "description": "Show low stock alerts (output printed to server console)."
       },
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "Get All Suppliers",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/suppliers/all",
+          "host": ["{{baseUrl}}"],
+          "path": ["suppliers", "all"]
+        },
+        "description": "List all suppliers (output printed to server console)."
       },
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "Get All Transactions",
       "request": {
         "method": "GET",
-        "header": []
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/transactions/all",
+          "host": ["{{baseUrl}}"],
+          "path": ["transactions", "all"]
+        },
+        "description": "List all stock transactions (output printed to server console)."
+      },
+      "response": []
+    },
+    {
+      "name": "Auth Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/auth/login",
+          "host": ["{{baseUrl}}"],
+          "path": ["auth", "login"]
+        },
+        "description": "Authenticate with admin credentials."
       },
       "response": []
     }
