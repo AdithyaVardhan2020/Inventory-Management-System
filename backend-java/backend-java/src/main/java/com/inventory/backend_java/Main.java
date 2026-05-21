@@ -1,5 +1,11 @@
 package com.inventory.backend_java;
 
+import com.inventory.backend_java.service.InventoryManager;
+import com.inventory.backend_java.service.SupplierManager;
+import com.inventory.backend_java.service.TransactionManager;
+import com.inventory.backend_java.model.Supplier;
+import com.inventory.backend_java.model.Product;
+
 public class Main {
 
     public static void main(String[] args) {
