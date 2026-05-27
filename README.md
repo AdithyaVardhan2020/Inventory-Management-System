@@ -101,3 +101,87 @@ Enhanced Python forecasting with:
 - Category-based forecasting
 - Regional demand forecasting
 - Reorder suggestions
+
+## Week 4 Progress
+
+During Week 4, the system moved from console-only API responses to full JSON CRUD APIs backed by SQLite, with frontend dashboard integration.
+
+## Completed Features
+
+- Product CRUD JSON APIs (create, read, update, delete)
+- Supplier CRUD JSON APIs
+- Transaction list JSON API
+- Low-stock alerts returned as JSON
+- SQLite integration via `DatabaseConnection` in all service managers
+- Frontend dashboard with summary cards and data tables
+- Add product and add supplier forms
+- Login form UI (`login.html` and dashboard login panel)
+- Updated Postman collection with all CRUD endpoints
+- CORS enabled for frontend API calls
+
+## Project Structure (Maven)
+
+```text
+Inventory-Management-System/
+├── backend-java/
+│   ├── backend-java/          ← Maven root (run mvn here)
+│   │   └── src/main/java/com/inventory/backend_java/
+│   └── frontend/
+│       ├── dashboard.html
+│       └── login.html
+├── database/
+│   ├── inventory.db
+│   └── inventory_schema.sql
+├── postman/
+│   └── inventory_api_collection.json
+└── analytics-python/
+```
+
+## Week 4 API Endpoints
+
+### Products
+- `GET /products/all` — JSON list of all products
+- `GET /products/{id}` — single product
+- `POST /products/add` — add product (JSON body)
+- `PUT /products/update/{id}` — update product
+- `DELETE /products/delete/{id}` — delete product
+- `GET /products/low-stock` — JSON low-stock alerts
+
+### Suppliers
+- `GET /suppliers/all`
+- `GET /suppliers/{id}`
+- `POST /suppliers/add`
+- `PUT /suppliers/update/{id}`
+- `DELETE /suppliers/delete/{id}`
+
+### Transactions
+- `GET /transactions/all` — JSON transaction history
+
+### Auth (unchanged)
+- `POST /auth/login` — body: `{ "username": "admin", "password": "admin123" }`
+- `POST /auth/register`
+
+### Health
+- `GET /api/health`
+
+## Run the Backend
+
+```bash
+cd backend-java/backend-java
+mvn spring-boot:run
+```
+
+## Test URLs
+
+- http://localhost:8080/products/all
+- http://localhost:8080/products/low-stock
+- http://localhost:8080/suppliers/all
+- http://localhost:8080/transactions/all
+
+## Frontend
+
+Open `backend-java/frontend/login.html` or `dashboard.html` in a browser (backend must be running on port 8080).
+
+## Postman
+
+Import `postman/inventory_api_collection.json` and set `baseUrl` to `http://localhost:8080`.

@@ -1,16 +1,340 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventory Dashboard</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family:Segoe UI, Tahoma, sans-serif;
+            margin:0;
+            background:#f4f6f8;
+            color:#1a1a1a;
+        }
+        header {
+            background:#1e3a5f;
+            color:#fff;
+            padding:1rem 2rem;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        main { padding:1.5rem 2rem; max-width:1200px; margin:0 auto; }
+        .cards {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+            gap:1rem;
+            margin-bottom:2rem;
+        }
+        .card {
+            background:#fff;
+            border-radius:8px;
+            padding:1.25rem;
+            box-shadow:0 2px 6px rgba(0,0,0,.08);
+        }
+        .card h3 { margin:0 0 .5rem; font-size:.9rem; color:#555; }
+        .card .value { font-size:2rem; font-weight:700; color:#1e3a5f; }
+        section {
+            background:#fff;
+            border-radius:8px;
+            padding:1.25rem;
+            margin-bottom:1.5rem;
+            box-shadow:0 2px 6px rgba(0,0,0,.08);
+        }
+        h2 { margin-top:0; font-size:1.1rem; }
+        form {
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+            gap:.75rem;
+            align-items:end;
+        }
+        label { display:flex; flex-direction:column; font-size:.85rem; gap:.25rem; }
+        input, select, button {
+            padding:.5rem .75rem;
+            border:1px solid #ccc;
+            border-radius:4px;
+            font-size:.9rem;
+        }
+        button {
+            background:#1e3a5f;
+            color:#fff;
+            border:none;
+            cursor:pointer;
+        }
+        button:hover { background:#2a5080; }
+        table { width:100%; border-collapse:collapse; font-size:.9rem; }
+        th, td { padding:.5rem; text-align:left; border-bottom:1px solid #eee; }
+        th { background:#f8f9fa; }
+        .status { margin:.5rem 0; font-size:.9rem; }
+        .status.error { color:#c0392b; }
+        .status.success { color:#27ae60; }
+        .hidden { display:none; }
+        #login-panel {
+            max-width:400px;
+            margin:4rem auto;
+            background:#fff;
+            padding:2rem;
+            border-radius:8px;
+            box-shadow:0 4px 12px rgba(0,0,0,.1);
+        }
+        a { color:#4a9eff; }
+    </style>
 </head>
 <body>
-    <h1>Inventory Management Dashboard</h1>
+    <div id="login-panel">
+        <h1>Inventory Login</h1>
+        <form id="login-form">
+            <label>Username
+                <input type="text" id="username" value="admin" required>
+            </label>
+            <label>Password
+                <input type="password" id="password" value="admin123" required>
+            </label>
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-status" class="status"></p>
+        <p><a href="dashboard.html">Skip to dashboard (dev)</a></p>
+    </div>
 
-    <ul>
-        <li>View Products</li>
-        <li>View Suppliers</li>
-        <li>View Transactions</li>
-        <li>Low Stock Alerts</li>
-    </ul>
+    <div id="app" class="hidden">
+        <header>
+            <h1>Inventory Management Dashboard</h1>
+            <button id="logout-btn" type="button">Logout</button>
+        </header>
+        <main>
+            <div class="cards">
+                <div class="card"><h3>Total Products</h3><div class="value" id="total-products">-</div></div>
+                <div class="card"><h3>Low Stock Items</h3><div class="value" id="low-stock-count">-</div></div>
+                <div class="card"><h3>Suppliers</h3><div class="value" id="total-suppliers">-</div></div>
+                <div class="card"><h3>Transactions</h3><div class="value" id="total-transactions">-</div></div>
+            </div>
+
+            <section>
+                <h2>Add Product</h2>
+                <form id="product-form">
+                    <label>Name <input name="productName" required></label>
+                    <label>Category <input name="category" required></label>
+                    <label>Quantity <input name="quantity" type="number" min="0" required></label>
+                    <label>Price <input name="price" type="number" step="0.01" min="0" required></label>
+                    <label>Reorder Level <input name="reorderLevel" type="number" min="0" value="10" required></label>
+                    <label>Supplier ID <input name="supplierId" type="number" min="1" required></label>
+                    <button type="submit">Add Product</button>
+                </form>
+                <p id="product-form-status" class="status"></p>
+            </section>
+
+            <section>
+                <h2>Add Supplier</h2>
+                <form id="supplier-form">
+                    <label>Name <input name="supplierName" required></label>
+                    <label>Contact <input name="contactPerson" required></label>
+                    <label>Phone <input name="phone" required></label>
+                    <label>Email <input type="email" name="email" required></label>
+                    <label>Address <input name="address" required></label>
+                    <button type="submit">Add Supplier</button>
+                </form>
+                <p id="supplier-form-status" class="status"></p>
+            </section>
+
+            <section>
+                <h2>Products</h2>
+                <table id="products-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Name</th><th>Category</th><th>Qty</th>
+                            <th>Price</th><th>Reorder</th><th>Supplier</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Low Stock Alerts</h2>
+                <table id="low-stock-table">
+                    <thead>
+                        <tr><th>ID</th><th>Name</th><th>Qty</th><th>Reorder Level</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Suppliers</h2>
+                <table id="suppliers-table">
+                    <thead>
+                        <tr><th>ID</th><th>Name</th><th>Contact</th><th>Phone</th><th>Email</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+
+            <section>
+                <h2>Transactions</h2>
+                <table id="transactions-table">
+                    <thead>
+                        <tr><th>ID</th><th>Product</th><th>Type</th><th>Qty</th><th>Date</th><th>Notes</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8080';
+
+        function showApp() {
+            document.getElementById('login-panel').classList.add('hidden');
+            document.getElementById('app').classList.remove('hidden');
+            loadDashboard();
+        }
+
+        function showLogin() {
+            sessionStorage.removeItem('loggedIn');
+            document.getElementById('login-panel').classList.remove('hidden');
+            document.getElementById('app').classList.add('hidden');
+        }
+
+        async function api(path, options = {}) {
+            const res = await fetch(API + path, {
+                headers: { 'Content-Type': 'application/json', ...options.headers },
+                ...options
+            });
+            if (!res.ok && res.status !== 404) {
+                throw new Error('Request failed: ' + res.status);
+            }
+            const text = await res.text();
+            return text ? JSON.parse(text) : null;
+        }
+
+        function formToJson(form) {
+            const data = {};
+            new FormData(form).forEach((v, k) => {
+                data[k] = ['quantity', 'price', 'reorderLevel', 'supplierId'].includes(k)
+                    ? Number(v) : v;
+            });
+            return data;
+        }
+
+        function fillTable(tbody, rows, cols) {
+            tbody.innerHTML = rows.length
+                ? rows.map(r => '<tr>' + cols.map(c => '<td>' + (r[c] ?? '') + '</td>').join('') + '</tr>').join('')
+                : '<tr><td colspan="' + cols.length + '">No data</td></tr>';
+        }
+
+        async function loadDashboard() {
+            try {
+                const [products, lowStock, suppliers, transactions] = await Promise.all([
+                    api('/products/all'),
+                    api('/products/low-stock'),
+                    api('/suppliers/all'),
+                    api('/transactions/all')
+                ]);
+
+                document.getElementById('total-products').textContent = products.length;
+                document.getElementById('low-stock-count').textContent = lowStock.length;
+                document.getElementById('total-suppliers').textContent = suppliers.length;
+                document.getElementById('total-transactions').textContent = transactions.length;
+
+                fillTable(
+                    document.querySelector('#products-table tbody'),
+                    products,
+                    ['productId', 'productName', 'category', 'quantity', 'price', 'reorderLevel', 'supplierName']
+                );
+                fillTable(
+                    document.querySelector('#low-stock-table tbody'),
+                    lowStock,
+                    ['productId', 'productName', 'quantity', 'reorderLevel']
+                );
+                fillTable(
+                    document.querySelector('#suppliers-table tbody'),
+                    suppliers,
+                    ['supplierId', 'supplierName', 'contactPerson', 'phone', 'email']
+                );
+                fillTable(
+                    document.querySelector('#transactions-table tbody'),
+                    transactions,
+                    ['transactionId', 'productName', 'transactionType', 'quantity', 'transactionDate', 'notes']
+                );
+            } catch (e) {
+                console.error(e);
+                alert('Could not load dashboard. Is the backend running on port 8080?');
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = document.getElementById('login-status');
+            status.textContent = 'Logging in...';
+            status.className = 'status';
+            try {
+                const res = await fetch(API + '/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        password: document.getElementById('password').value
+                    })
+                });
+                const text = await res.text();
+                if (text === 'Login successful') {
+                    sessionStorage.setItem('loggedIn', 'true');
+                    status.textContent = 'Login successful';
+                    status.className = 'status success';
+                    showApp();
+                } else {
+                    status.textContent = text || 'Invalid credentials';
+                    status.className = 'status error';
+                }
+            } catch (err) {
+                status.textContent = 'Cannot reach backend at ' + API;
+                status.className = 'status error';
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', showLogin);
+
+        document.getElementById('product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = document.getElementById('product-form-status');
+            try {
+                await api('/products/add', {
+                    method: 'POST',
+                    body: JSON.stringify(formToJson(e.target))
+                });
+                status.textContent = 'Product added';
+                status.className = 'status success';
+                e.target.reset();
+                loadDashboard();
+            } catch (err) {
+                status.textContent = 'Failed to add product';
+                status.className = 'status error';
+            }
+        });
+
+        document.getElementById('supplier-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const status = document.getElementById('supplier-form-status');
+            try {
+                await api('/suppliers/add', {
+                    method: 'POST',
+                    body: JSON.stringify(formToJson(e.target))
+                });
+                status.textContent = 'Supplier added';
+                status.className = 'status success';
+                e.target.reset();
+                loadDashboard();
+            } catch (err) {
+                status.textContent = 'Failed to add supplier';
+                status.className = 'status error';
+            }
+        });
+
+        if (sessionStorage.getItem('loggedIn') === 'true') {
+            showApp();
+        }
+    </script>
 </body>
 </html>

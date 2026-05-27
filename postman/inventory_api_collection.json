@@ -2,10 +2,8 @@
   "info": {
     "_postman_id": "beedb221-f53b-4055-9090-6b71abf3e961",
     "name": "Inventory API Collection",
-    "description": "Inventory Management System REST API endpoints (Spring Boot backend on port 8080).",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "55048432",
-    "_collection_link": "https://go.postman.co/collection/55048432-beedb221-f53b-4055-9090-6b71abf3e961?source=collection_link"
+    "description": "Inventory Management System REST API — Week 4 JSON CRUD endpoints (Spring Boot on port 8080).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
@@ -16,102 +14,164 @@
   ],
   "item": [
     {
-      "name": "Health Check",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/health",
-          "host": ["{{baseUrl}}"],
-          "path": ["api", "health"]
-        },
-        "description": "Verify the backend is running."
-      },
-      "response": []
-    },
-    {
-      "name": "Get All Products",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/products/all",
-          "host": ["{{baseUrl}}"],
-          "path": ["products", "all"]
-        },
-        "description": "List all products (output printed to server console)."
-      },
-      "response": []
-    },
-    {
-      "name": "Get Low Stock Products",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/products/low-stock",
-          "host": ["{{baseUrl}}"],
-          "path": ["products", "low-stock"]
-        },
-        "description": "Show low stock alerts (output printed to server console)."
-      },
-      "response": []
-    },
-    {
-      "name": "Get All Suppliers",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/suppliers/all",
-          "host": ["{{baseUrl}}"],
-          "path": ["suppliers", "all"]
-        },
-        "description": "List all suppliers (output printed to server console)."
-      },
-      "response": []
-    },
-    {
-      "name": "Get All Transactions",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/transactions/all",
-          "host": ["{{baseUrl}}"],
-          "path": ["transactions", "all"]
-        },
-        "description": "List all stock transactions (output printed to server console)."
-      },
-      "response": []
-    },
-    {
-      "name": "Auth Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          {
-            "key": "Content-Type",
-            "value": "application/json"
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/health"
           }
-        ],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
           }
         },
-        "url": {
-          "raw": "{{baseUrl}}/auth/login",
-          "host": ["{{baseUrl}}"],
-          "path": ["auth", "login"]
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"staff1\",\n  \"password\": \"pass123\",\n  \"role\": \"staff\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/all"
+          }
         },
-        "description": "Authenticate with admin credentials."
-      },
-      "response": []
+        {
+          "name": "Get Product By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/1"
+          }
+        },
+        {
+          "name": "Add Product",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Wireless Mouse\",\n  \"category\": \"Electronics\",\n  \"quantity\": 50,\n  \"price\": 29.99,\n  \"reorderLevel\": 10,\n  \"supplierId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/products/add"
+          }
+        },
+        {
+          "name": "Update Product",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Wireless Mouse\",\n  \"category\": \"Electronics\",\n  \"quantity\": 45,\n  \"price\": 27.99,\n  \"reorderLevel\": 10,\n  \"supplierId\": 1\n}"
+            },
+            "url": "{{baseUrl}}/products/update/1"
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/products/delete/1"
+          }
+        },
+        {
+          "name": "Get Low Stock",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/low-stock"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Suppliers",
+      "item": [
+        {
+          "name": "Get All Suppliers",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/suppliers/all"
+          }
+        },
+        {
+          "name": "Get Supplier By ID",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/suppliers/1"
+          }
+        },
+        {
+          "name": "Add Supplier",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplierName\": \"Tech Supplies Inc\",\n  \"contactPerson\": \"Jane Doe\",\n  \"phone\": \"555-0100\",\n  \"email\": \"jane@techsupplies.com\",\n  \"address\": \"123 Main St, Denver CO\"\n}"
+            },
+            "url": "{{baseUrl}}/suppliers/add"
+          }
+        },
+        {
+          "name": "Update Supplier",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplierName\": \"Tech Supplies Inc\",\n  \"contactPerson\": \"Jane Doe\",\n  \"phone\": \"555-0199\",\n  \"email\": \"jane@techsupplies.com\",\n  \"address\": \"456 Oak Ave, Denver CO\"\n}"
+            },
+            "url": "{{baseUrl}}/suppliers/update/1"
+          }
+        },
+        {
+          "name": "Delete Supplier",
+          "request": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/suppliers/delete/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "Get All Transactions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/transactions/all"
+          }
+        }
+      ]
     }
   ]
 }
