@@ -16,6 +16,9 @@ OS files
 .DS_Store
 Thumbs.db
 
+Word documents
+*.docx
+
 Keep Java source files
 !backend-java/
 !backend-java//
