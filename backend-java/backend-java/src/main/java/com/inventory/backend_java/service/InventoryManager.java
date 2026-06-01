@@ -131,6 +131,108 @@ public class InventoryManager {
         }
     }
 
+    public List<Product> searchProducts(String keyword, String category) {
+        StringBuilder sql = new StringBuilder("""
+                SELECT p.product_id, p.product_name, p.category, p.quantity, p.price, p.reorder_level,
+                       p.supplier_id, s.supplier_name
+                FROM products p
+                LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
+                WHERE 1=1
+                """);
+
+        List<String> params = new ArrayList<>();
+
+        if (keyword != null && !keyword.isBlank()) {
+            sql.append(" AND (LOWER(p.product_name) LIKE ? OR LOWER(p.category) LIKE ?)");
+            String pattern = "%" + keyword.toLowerCase() + "%";
+            params.add(pattern);
+            params.add(pattern);
+        }
+        if (category != null && !category.isBlank()) {
+            sql.append(" AND LOWER(p.category) = ?");
+            params.add(category.toLowerCase());
+        }
+
+        sql.append(" ORDER BY p.product_name");
+
+        List<Product> products = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                statement.setString(i + 1, params.get(i));
+            }
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    products.add(mapProduct(resultSet));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching products.");
+            e.printStackTrace();
+        }
+
+        return products;
+    }
+
+    public List<String> getCategories() {
+        String sql = "SELECT DISTINCT category FROM products WHERE category IS NOT NULL ORDER BY category";
+        List<String> categories = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                categories.add(resultSet.getString("category"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching categories.");
+            e.printStackTrace();
+        }
+
+        return categories;
+    }
+
+    public List<com.inventory.backend_java.model.CategoryStat> getCategoryBreakdown() {
+        String sql = "SELECT category, COUNT(*) AS count FROM products GROUP BY category ORDER BY count DESC";
+        List<com.inventory.backend_java.model.CategoryStat> stats = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                stats.add(new com.inventory.backend_java.model.CategoryStat(
+                        resultSet.getString("category"),
+                        resultSet.getInt("count")
+                ));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching category breakdown.");
+            e.printStackTrace();
+        }
+
+        return stats;
+    }
+
+    public int countProducts() {
+        return getAllProducts().size();
+    }
+
+    public int countLowStock() {
+        return getLowStockProducts().size();
+    }
+
+    public boolean productExists(int productId) {
+        return getProductById(productId) != null;
+    }
+
     public List<Product> getLowStockProducts() {
         String sql = """
                 SELECT product_id, product_name, category, quantity, price, reorder_level, supplier_id

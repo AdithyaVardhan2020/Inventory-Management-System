@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "beedb221-f53b-4055-9090-6b71abf3e961",
     "name": "Inventory API Collection",
-    "description": "Inventory Management System REST API — Week 4 JSON CRUD endpoints (Spring Boot on port 8080).",
+    "description": "Inventory Management System REST API — Week 5 with validation, search, and statistics (Spring Boot on port 8080).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -108,6 +108,28 @@
             "method": "GET",
             "url": "{{baseUrl}}/products/low-stock"
           }
+        },
+        {
+          "name": "Search Products",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/products/search?keyword=laptop&category=Electronics",
+              "host": ["{{baseUrl}}"],
+              "path": ["products", "search"],
+              "query": [
+                { "key": "keyword", "value": "laptop" },
+                { "key": "category", "value": "Electronics" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/products/categories"
+          }
         }
       ]
     },
@@ -157,6 +179,30 @@
           "request": {
             "method": "DELETE",
             "url": "{{baseUrl}}/suppliers/delete/1"
+          }
+        },
+        {
+          "name": "Search Suppliers",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/suppliers/search?keyword=abc",
+              "host": ["{{baseUrl}}"],
+              "path": ["suppliers", "search"],
+              "query": [{ "key": "keyword", "value": "abc" }]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Statistics",
+      "item": [
+        {
+          "name": "Get Inventory Statistics",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/statistics"
           }
         }
       ]

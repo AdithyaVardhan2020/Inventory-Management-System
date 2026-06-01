@@ -185,3 +185,67 @@ Open `backend-java/frontend/login.html` or `dashboard.html` in a browser (backen
 ## Postman
 
 Import `postman/inventory_api_collection.json` and set `baseUrl` to `http://localhost:8080`.
+
+## Week 5 Progress
+
+During Week 5, the application was upgraded to a production-style inventory system with a professional frontend, validation, search/filter APIs, analytics, and improved error handling.
+
+## Completed Features
+
+### Frontend
+- Professional dashboard UI with sidebar navigation
+- Responsive CSS layout (`css/styles.css`)
+- Dynamic product, supplier, and transaction tables
+- Low-stock alerts panel
+- Product add/update/delete forms with inline edit
+- Supplier add/update/delete forms with inline edit
+- Search and category filter for products
+- Supplier search
+- Analytics charts (Chart.js) — category breakdown and inventory overview
+- Improved login page with client-side validation
+
+### Backend
+- JSON error responses with HTTP status codes (200, 201, 400, 404, 500)
+- Global exception handler (`GlobalExceptionHandler`)
+- Product and supplier validation
+- Search API: `GET /products/search?keyword=&category=`
+- Category filter: `GET /products/categories`
+- Supplier search: `GET /suppliers/search?keyword=`
+- Inventory statistics: `GET /api/statistics`
+
+### Analytics
+- Dashboard analytics cards and charts
+- Improved Python forecasting with multi-panel visualization
+
+### Documentation
+- API reference: `docs/API.md`
+- Screenshot guide: `docs/screenshots/`
+
+## Week 5 API Endpoints (new)
+
+- `GET /api/statistics` — totals and category breakdown
+- `GET /products/search?keyword=&category=` — search/filter products
+- `GET /products/categories` — list product categories
+- `GET /suppliers/search?keyword=` — search suppliers
+
+## Frontend Structure
+
+```text
+backend-java/frontend/
+├── css/styles.css
+├── js/app.js
+├── login.html
+└── dashboard.html
+```
+
+## Run & Test
+
+```bash
+cd backend-java/backend-java
+mvn compile test
+mvn spring-boot:run
+```
+
+Open `backend-java/frontend/login.html` (credentials: `admin` / `admin123`).
+
+See `docs/API.md` for full endpoint documentation.

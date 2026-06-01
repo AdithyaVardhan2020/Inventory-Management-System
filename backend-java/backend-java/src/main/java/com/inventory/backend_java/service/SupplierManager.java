@@ -75,6 +75,42 @@ public class SupplierManager {
         return null;
     }
 
+    public List<Supplier> searchSuppliers(String keyword) {
+        if (keyword == null || keyword.isBlank()) {
+            return getAllSuppliers();
+        }
+
+        String sql = """
+                SELECT * FROM suppliers
+                WHERE LOWER(supplier_name) LIKE ?
+                   OR LOWER(contact_person) LIKE ?
+                   OR LOWER(email) LIKE ?
+                ORDER BY supplier_name
+                """;
+        String pattern = "%" + keyword.toLowerCase() + "%";
+        List<Supplier> suppliers = new ArrayList<>();
+
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, pattern);
+            statement.setString(2, pattern);
+            statement.setString(3, pattern);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    suppliers.add(mapSupplier(resultSet));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error searching suppliers.");
+            e.printStackTrace();
+        }
+
+        return suppliers;
+    }
+
     public boolean updateSupplier(int supplierId, Supplier supplier) {
         String sql = """
                 UPDATE suppliers
