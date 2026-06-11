@@ -387,6 +387,55 @@ tr:hover td { background: #f8fafc; }
     color: var(--muted);
 }
 
+.report-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.report-card {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08);
+    border: 1px solid var(--border);
+}
+
+.report-card h3 { font-size: 1rem; margin-bottom: .5rem; }
+.report-card p { font-size: .85rem; color: var(--muted); margin-bottom: 1rem; }
+
+.report-preview {
+    margin-top: 1.5rem;
+}
+
+.report-meta {
+    font-size: .85rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+.badge-critical { background: #fef2f2; color: var(--danger); }
+.badge-high { background: #fff7ed; color: var(--warning); }
+.badge-medium { background: #eff6ff; color: var(--accent); }
+
+.forecast-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.forecast-stat {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.forecast-stat .label { font-size: .8rem; color: var(--muted); }
+.forecast-stat .num { font-size: 1.5rem; font-weight: 700; color: var(--primary); }
+
 @media (max-width: 768px) {
     .sidebar {
         transform: translateX(-100%);

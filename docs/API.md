@@ -86,6 +86,24 @@ Base URL: `http://localhost:8080`
 }
 ```
 
+## Analytics
+
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/api/analytics/forecast` | Category demand forecast | 200 |
+| GET | `/api/analytics/reorder-suggestions` | Reorder recommendations | 200 |
+
+## Reports
+
+| Method | Endpoint | Description | Status |
+|--------|----------|-------------|--------|
+| GET | `/api/reports/inventory-summary` | Summary metrics report | 200 |
+| GET | `/api/reports/low-stock` | Low stock report | 200 |
+| GET | `/api/reports/suppliers` | Supplier directory report | 200 |
+| GET | `/api/reports/transactions` | Transaction history report | 200 |
+
+Reports return JSON with `columns` and `rows` for frontend display and CSV export.
+
 ## HTTP Status Codes
 
 - **200** — Success

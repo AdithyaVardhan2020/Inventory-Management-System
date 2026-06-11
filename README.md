@@ -249,3 +249,52 @@ mvn spring-boot:run
 Open `backend-java/frontend/login.html` (credentials: `admin` / `admin123`).
 
 See `docs/API.md` for full endpoint documentation.
+
+## Week 6 Progress — Project Coding Complete
+
+Week 6 completes the demo-ready inventory application. All coding is finished; Week 7 is for report, PPT, screenshots, and presentation only.
+
+## Completed Features
+
+### Frontend (complete)
+- Full dashboard with sidebar: Dashboard, Products, Suppliers, Transactions, Low Stock, Analytics, Reports
+- Live API data on all tables and cards
+- Product/supplier CRUD forms (add, edit, delete)
+- Product search and category filter
+- Analytics panel with forecast charts and reorder suggestions
+- Reports panel with 4 report types and CSV export
+- Login UI with validation (`admin` / `admin123`)
+
+### Backend (complete)
+- Product & Supplier CRUD with validation
+- Search/filter APIs
+- Statistics API
+- Analytics forecast & reorder suggestion APIs
+- Reports API (summary, low stock, suppliers, transactions)
+- Global error handling (400, 404, 500)
+
+### Demo Data
+Load richer demo data (optional):
+```bash
+sqlite3 database/inventory.db < database/inventory_schema.sql
+sqlite3 database/inventory.db < database/week6_demo_seed.sql
+```
+
+## Week 6 API Endpoints (new)
+
+- `GET /api/analytics/forecast`
+- `GET /api/analytics/reorder-suggestions`
+- `GET /api/reports/inventory-summary`
+- `GET /api/reports/low-stock`
+- `GET /api/reports/suppliers`
+- `GET /api/reports/transactions`
+
+## Demo Checklist
+
+1. `mvn spring-boot:run` in `backend-java/backend-java`
+2. Open `backend-java/frontend/login.html`
+3. Login → view dashboard cards, tables, analytics, reports
+4. Add/edit/delete products and suppliers
+5. Search/filter products
+6. View and export reports as CSV
+7. Review reorder suggestions and forecast charts

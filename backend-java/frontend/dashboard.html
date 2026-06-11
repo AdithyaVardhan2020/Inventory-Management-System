@@ -20,6 +20,8 @@
                 <button class="nav-item" data-panel="panel-suppliers">Suppliers</button>
                 <button class="nav-item" data-panel="panel-transactions">Transactions</button>
                 <button class="nav-item" data-panel="panel-lowstock">Low Stock</button>
+                <button class="nav-item" data-panel="panel-analytics">Analytics</button>
+                <button class="nav-item" data-panel="panel-reports">Reports</button>
             </nav>
             <div class="sidebar-footer">
                 <button class="btn btn-outline btn-block" id="logout-btn" style="color:#fff;border-color:rgba(255,255,255,.3)">Logout</button>
@@ -162,6 +164,82 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics -->
+                <div id="panel-analytics" class="panel">
+                    <div class="section-card">
+                        <h2>Analytics &amp; Forecast</h2>
+                        <div class="forecast-summary" id="forecast-summary"></div>
+                        <div class="charts-row">
+                            <div class="chart-card">
+                                <h3>Category Demand Forecast</h3>
+                                <canvas id="forecast-chart"></canvas>
+                            </div>
+                            <div class="chart-card">
+                                <h3>Stock vs Forecasted Demand</h3>
+                                <canvas id="stock-forecast-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section-card">
+                        <h2>Reorder Suggestions</h2>
+                        <div class="table-wrap">
+                            <table id="reorder-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product</th><th>Category</th><th>Current Qty</th>
+                                        <th>Reorder Level</th><th>Suggested Order</th><th>Priority</th><th>Supplier</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reports -->
+                <div id="panel-reports" class="panel">
+                    <div class="section-card">
+                        <h2>Inventory Reports</h2>
+                        <p style="color:var(--muted);margin-bottom:1rem">Generate and export inventory reports from live database data.</p>
+                        <div class="report-grid">
+                            <div class="report-card">
+                                <h3>Inventory Summary</h3>
+                                <p>Totals, categories, and key metrics.</p>
+                                <button class="btn btn-primary btn-sm" onclick="viewReport('inventory-summary')">View</button>
+                                <button class="btn btn-outline btn-sm" onclick="exportReport('inventory-summary')">Export CSV</button>
+                            </div>
+                            <div class="report-card">
+                                <h3>Low Stock Report</h3>
+                                <p>Products at or below reorder level.</p>
+                                <button class="btn btn-primary btn-sm" onclick="viewReport('low-stock')">View</button>
+                                <button class="btn btn-outline btn-sm" onclick="exportReport('low-stock')">Export CSV</button>
+                            </div>
+                            <div class="report-card">
+                                <h3>Supplier Report</h3>
+                                <p>Full supplier contact directory.</p>
+                                <button class="btn btn-primary btn-sm" onclick="viewReport('suppliers')">View</button>
+                                <button class="btn btn-outline btn-sm" onclick="exportReport('suppliers')">Export CSV</button>
+                            </div>
+                            <div class="report-card">
+                                <h3>Transaction Report</h3>
+                                <p>Complete stock transaction history.</p>
+                                <button class="btn btn-primary btn-sm" onclick="viewReport('transactions')">View</button>
+                                <button class="btn btn-outline btn-sm" onclick="exportReport('transactions')">Export CSV</button>
+                            </div>
+                        </div>
+                        <div class="report-preview hidden" id="report-preview">
+                            <h3 id="report-title"></h3>
+                            <p class="report-meta" id="report-meta"></p>
+                            <div class="table-wrap">
+                                <table id="report-table">
+                                    <thead></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

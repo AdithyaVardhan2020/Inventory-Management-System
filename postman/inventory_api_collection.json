@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "beedb221-f53b-4055-9090-6b71abf3e961",
     "name": "Inventory API Collection",
-    "description": "Inventory Management System REST API — Week 5 with validation, search, and statistics (Spring Boot on port 8080).",
+    "description": "Inventory Management System REST API — Week 6 final demo-ready APIs (Spring Boot on port 8080).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -203,6 +203,58 @@
           "request": {
             "method": "GET",
             "url": "{{baseUrl}}/api/statistics"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Analytics",
+      "item": [
+        {
+          "name": "Get Forecast",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/forecast"
+          }
+        },
+        {
+          "name": "Get Reorder Suggestions",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/analytics/reorder-suggestions"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reports",
+      "item": [
+        {
+          "name": "Inventory Summary Report",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/inventory-summary"
+          }
+        },
+        {
+          "name": "Low Stock Report",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/low-stock"
+          }
+        },
+        {
+          "name": "Supplier Report",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/suppliers"
+          }
+        },
+        {
+          "name": "Transaction Report",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/reports/transactions"
           }
         }
       ]

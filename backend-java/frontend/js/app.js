@@ -2,8 +2,11 @@ const API = 'http://localhost:8080';
 
 let categoryChart = null;
 let statsChart = null;
+let forecastChart = null;
+let stockForecastChart = null;
 let editingProductId = null;
 let editingSupplierId = null;
+const reportCache = {};
 
 async function api(path, options = {}) {
     const res = await fetch(API + path, {
@@ -199,6 +202,134 @@ async function loadTransactions() {
     return transactions;
 }
 
+async function loadAnalytics() {
+    const [forecast, reorder] = await Promise.all([
+        api('/api/analytics/forecast'),
+        api('/api/analytics/reorder-suggestions')
+    ]);
+
+    const summary = document.getElementById('forecast-summary');
+    if (summary) {
+        summary.innerHTML = `
+            <div class="forecast-stat"><div class="label">Total Products</div><div class="num">${forecast.totalProducts}</div></div>
+            <div class="forecast-stat"><div class="label">Low Stock</div><div class="num">${forecast.lowStockCount}</div></div>
+            <div class="forecast-stat"><div class="label">Forecasted Demand</div><div class="num">${forecast.forecastedMonthlyDemand}</div></div>
+            <div class="forecast-stat"><div class="label">Categories</div><div class="num">${forecast.categoryForecasts.length}</div></div>`;
+    }
+
+    renderForecastCharts(forecast);
+
+    const tbody = document.querySelector('#reorder-table tbody');
+    if (tbody) {
+        fillTable(tbody, reorder,
+            ['productName', 'category', 'currentQuantity', 'reorderLevel', 'suggestedOrderQuantity', 'priority', 'supplierName'],
+            {
+                currentQuantity: r => `<td>${r.currentQuantity}</td>`,
+                priority: r => `<td><span class="badge badge-${r.priority.toLowerCase()}">${r.priority}</span></td>`
+            }
+        );
+    }
+}
+
+function renderForecastCharts(forecast) {
+    const items = forecast.categoryForecasts || [];
+    const labels = items.map(i => i.category);
+    const demand = items.map(i => i.forecastedDemand);
+    const stock = items.map(i => i.currentStock);
+
+    const ctx1 = document.getElementById('forecast-chart');
+    if (ctx1) {
+        if (forecastChart) forecastChart.destroy();
+        forecastChart = new Chart(ctx1, {
+            type: 'bar',
+            data: { labels, datasets: [{ label: 'Forecasted Demand', data: demand, backgroundColor: '#3b82f6' }] },
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+    }
+
+    const ctx2 = document.getElementById('stock-forecast-chart');
+    if (ctx2) {
+        if (stockForecastChart) stockForecastChart.destroy();
+        stockForecastChart = new Chart(ctx2, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    { label: 'Current Stock', data: stock, borderColor: '#1e3a5f', backgroundColor: 'rgba(30,58,95,.1)', fill: true },
+                    { label: 'Forecasted Demand', data: demand, borderColor: '#d97706', borderDash: [5, 5] }
+                ]
+            },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
+        });
+    }
+}
+
+async function fetchReport(type) {
+    if (reportCache[type]) return reportCache[type];
+    const report = await api('/api/reports/' + type);
+    reportCache[type] = report;
+    return report;
+}
+
+function displayReport(report) {
+    const preview = document.getElementById('report-preview');
+    preview.classList.remove('hidden');
+    document.getElementById('report-title').textContent = report.title;
+    document.getElementById('report-meta').textContent =
+        `Generated: ${report.generatedAt} | Records: ${report.recordCount}`;
+
+    const thead = document.querySelector('#report-table thead');
+    const tbody = document.querySelector('#report-table tbody');
+    thead.innerHTML = '<tr>' + report.columns.map(c => `<th>${c}</th>`).join('') + '</tr>';
+    if (!report.rows.length) {
+        tbody.innerHTML = `<tr><td colspan="${report.columns.length}" class="empty-state">No data</td></tr>`;
+        return;
+    }
+    tbody.innerHTML = report.rows.map(row =>
+        '<tr>' + report.columns.map(c => `<td>${row[c] ?? ''}</td>`).join('') + '</tr>'
+    ).join('');
+    preview.scrollIntoView({ behavior: 'smooth' });
+}
+
+async function viewReport(type) {
+    try {
+        reportCache[type] = null;
+        const report = await fetchReport(type);
+        displayReport(report);
+    } catch (e) {
+        alert('Failed to load report: ' + e.message);
+    }
+}
+
+function exportToCsv(report) {
+    const header = report.columns.join(',');
+    const rows = report.rows.map(row =>
+        report.columns.map(c => {
+            const val = row[c] ?? '';
+            const str = String(val).replace(/"/g, '""');
+            return str.includes(',') ? `"${str}"` : str;
+        }).join(',')
+    );
+    const csv = [header, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${report.reportType}-report-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+async function exportReport(type) {
+    try {
+        reportCache[type] = null;
+        const report = await fetchReport(type);
+        exportToCsv(report);
+    } catch (e) {
+        alert('Failed to export report: ' + e.message);
+    }
+}
+
 async function loadDashboard() {
     try {
         await Promise.all([
@@ -207,7 +338,8 @@ async function loadDashboard() {
             loadCategories(),
             loadLowStock(),
             loadSuppliers(),
-            loadTransactions()
+            loadTransactions(),
+            loadAnalytics()
         ]);
     } catch (e) {
         console.error(e);
@@ -287,7 +419,10 @@ async function deleteSupplier(id) {
 
 function initDashboard() {
     document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', () => navigateTo(btn.dataset.panel));
+        btn.addEventListener('click', () => {
+            navigateTo(btn.dataset.panel);
+            if (btn.dataset.panel === 'panel-analytics') loadAnalytics();
+        });
     });
 
     document.getElementById('menu-toggle')?.addEventListener('click', () => {

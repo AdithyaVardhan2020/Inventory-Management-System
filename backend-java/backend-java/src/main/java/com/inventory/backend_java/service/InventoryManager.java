@@ -235,9 +235,11 @@ public class InventoryManager {
 
     public List<Product> getLowStockProducts() {
         String sql = """
-                SELECT product_id, product_name, category, quantity, price, reorder_level, supplier_id
-                FROM products
-                WHERE quantity <= reorder_level
+                SELECT p.product_id, p.product_name, p.category, p.quantity, p.price, p.reorder_level,
+                       p.supplier_id, s.supplier_name
+                FROM products p
+                LEFT JOIN suppliers s ON p.supplier_id = s.supplier_id
+                WHERE p.quantity <= p.reorder_level
                 """;
 
         List<Product> products = new ArrayList<>();
@@ -247,15 +249,7 @@ public class InventoryManager {
              ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
-                Product product = new Product();
-                product.setProductId(resultSet.getInt("product_id"));
-                product.setProductName(resultSet.getString("product_name"));
-                product.setCategory(resultSet.getString("category"));
-                product.setQuantity(resultSet.getInt("quantity"));
-                product.setPrice(resultSet.getDouble("price"));
-                product.setReorderLevel(resultSet.getInt("reorder_level"));
-                product.setSupplierId(resultSet.getInt("supplier_id"));
-                products.add(product);
+                products.add(mapProduct(resultSet));
             }
 
         } catch (SQLException e) {
