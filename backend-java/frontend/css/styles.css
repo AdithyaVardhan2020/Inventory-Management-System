@@ -240,6 +240,12 @@ a:hover { text-decoration: underline; }
     margin-bottom: 1.5rem;
 }
 
+.data-source {
+    color: var(--muted);
+    font-size: .9rem;
+    margin: -.5rem 0 1.25rem;
+}
+
 .stat-card {
     background: var(--surface);
     border-radius: 10px;

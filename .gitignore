@@ -11,6 +11,10 @@ Maven
 
 Logs
 .log
+*.log
+
+Large local Kaggle datasets
+backend-java/backend-java/src/main/resources/data/*.csv
 
 OS files
 .DS_Store

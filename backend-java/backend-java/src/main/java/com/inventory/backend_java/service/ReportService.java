@@ -30,6 +30,9 @@ public class ReportService {
         rows.add(row("Total Suppliers", stats.getTotalSuppliers()));
         rows.add(row("Total Transactions", stats.getTotalTransactions()));
         rows.add(row("Low Stock Items", stats.getLowStockCount()));
+        rows.add(row("Total Inventory Value (INR)", stats.getTotalInventoryValue()));
+        rows.add(row("Total Sales Value (INR)", stats.getTotalSalesValue()));
+        rows.add(row("Data Source", stats.getDataSource()));
         for (var cat : stats.getCategoryBreakdown()) {
             rows.add(row("Products in " + cat.getCategory(), cat.getCount()));
         }

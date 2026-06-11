@@ -39,7 +39,10 @@ function formToJson(form, numericFields = []) {
 }
 
 function formatPrice(n) {
-    return '$' + Number(n).toFixed(2);
+    return '₹' + Number(n).toLocaleString('en-IN', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
 function navigateTo(panelId) {
@@ -70,6 +73,10 @@ async function loadStatistics() {
     document.getElementById('low-stock-count').textContent = stats.lowStockCount;
     document.getElementById('total-suppliers').textContent = stats.totalSuppliers;
     document.getElementById('total-transactions').textContent = stats.totalTransactions;
+    document.getElementById('total-inventory-value').textContent = formatPrice(stats.totalInventoryValue || 0);
+    document.getElementById('total-sales-value').textContent = formatPrice(stats.totalSalesValue || 0);
+    document.getElementById('data-source-label').textContent =
+        'Data source: ' + (stats.dataSource || 'Amazon India public datasets');
 
     renderCategoryChart(stats.categoryBreakdown || []);
     renderStatsChart(stats);
